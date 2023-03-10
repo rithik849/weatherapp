@@ -1,0 +1,1 @@
+export type URL_Type = string;
