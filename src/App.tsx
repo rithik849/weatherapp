@@ -1,34 +1,44 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
+
 import './App.css'
+import { URL_Type } from './project_types/types'
+import {url} from './constants.js'
 
-function App() {
-  const [count, setCount] = useState(0)
 
-  return (
+const App : React.FC = () => {
+    const [fetchedData, setFetchedData] = useState<JSON | null>(null);
+
+    useEffect( () => {
+        const controller = new AbortController();
+        const abortSignal = controller.signal;
+
+        async function getWeather(url : URL_Type, abortSignal : AbortSignal){
+            try{
+        
+                const res : Response = await fetch(url,{method : 'get',signal : abortSignal});
+                const resJSON : JSON = (await res.json())["daily"];
+                setFetchedData((resJSON))
+            }catch(e){
+                if (! controller.signal.aborted){
+                    const error : string = e as string;
+                    alert("Something went wrong: " + error);
+                }
+            }
+        }
+        getWeather(url, abortSignal);
+
+        return () => {controller.abort()}
+
+    },[])
+
+    console.log(url);
+
+    return (
     <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+        <p>{JSON.stringify(fetchedData)}</p>
     </div>
-  )
-}
+    )
+};
 
 export default App
