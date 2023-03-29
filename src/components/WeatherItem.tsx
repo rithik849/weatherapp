@@ -1,7 +1,7 @@
-import './styles/WeatherItem.css'
-import {WeatherProps} from "./project_types/types"
-import { date_reformat } from './utils';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import '../styles/WeatherItem.css'
+import {WeatherProps} from "../project_types/types"
+import { date_reformat } from '../utils';
+import { useEffect, useState } from 'react';
 
 const WeatherItem :React.FC<React.PropsWithChildren<WeatherProps>> = (prop) : React.ReactElement => {
     const [date,setDate]  =  useState<Date>(new Date())
