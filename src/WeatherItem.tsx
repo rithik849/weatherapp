@@ -1,5 +1,6 @@
 import './styles/WeatherItem.css'
 import {WeatherProps} from "./project_types/types"
+import { date_reformat } from './utils';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 const WeatherItem :React.FC<React.PropsWithChildren<WeatherProps>> = (prop) : React.ReactElement => {
@@ -20,7 +21,7 @@ const WeatherItem :React.FC<React.PropsWithChildren<WeatherProps>> = (prop) : Re
             <div className = "WeatherItem" onClick={()=>console.log("Clicked!")}>
                 <div className='Contents'>
                     <div className="Day">{date.toDateString().substring(0,4)} </div>
-                    <div className="Date">{prop.date}  </div>
+                    <div className="Date">{date_reformat(prop.date)}  </div>
                     <div className="Min_temp">{prop.min_temp + "°C"}</div> 
                     <div className="Max_temp">{prop.max_temp + "°C"}</div>
                 </div>
