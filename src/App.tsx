@@ -15,20 +15,20 @@ const App : React.FC = () => {
         const controller = new AbortController();
         const abortSignal = controller.signal;
 
-        async function getWeather(url : URL_Type, abortSignal : AbortSignal) : Promise<void>{
-            try{
-        
-                const res : Response = await fetch(url,{method : 'get',signal : abortSignal});
-                const resJSON : IFetchedData = (await res.json())["daily"];
-                setFetchedData((resJSON))
-            }catch(e){
-                if (! controller.signal.aborted){
-                    const error : string = e as string;
-                    alert("Something went wrong: " + error);
+        fetch(url,{method : 'GET',signal : abortSignal})
+        .then((res) => res.json())
+        .then(
+            (json) => {
+                setFetchedData(json['daily'])
+            }
+        )
+        .catch(
+            (err) => {
+                if (!controller.signal.aborted){
+                    alert('Something Went Wrong : ' + err)
                 }
             }
-        }
-        getWeather(url, abortSignal);
+        )
 
         return () => {controller.abort()}
 
