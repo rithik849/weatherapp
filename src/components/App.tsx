@@ -7,8 +7,8 @@ const App : React.FC = () => {
     const router = createBrowserRouter(
         createRoutesFromElements(
             <Route>
-            <Route path="/" element = {<Forecast/>} />
-            <Route path="*" element = {<h1>Err</h1>} />
+                <Route path="/" element = {<Forecast/>} />
+                <Route path="*" element = {<h1>Err</h1>} />
             </Route>
     ))
 
