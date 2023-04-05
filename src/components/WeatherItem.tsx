@@ -2,9 +2,11 @@ import '../styles/WeatherItem.css'
 import {WeatherProps} from "../project_types/types"
 import { date_reformat } from '../utils';
 import { useEffect, useState } from 'react';
+import {useNavigate } from 'react-router-dom';
 
 const WeatherItem :React.FC<React.PropsWithChildren<WeatherProps>> = (prop) : React.ReactElement => {
     const [date,setDate]  =  useState<Date>(new Date())
+    const navigate = useNavigate()
 
     useEffect(() => {
         const date : {year : number, month : number , day : number }= {
@@ -18,7 +20,7 @@ const WeatherItem :React.FC<React.PropsWithChildren<WeatherProps>> = (prop) : Re
 
 
     return (
-            <div className = "WeatherItem" onClick={()=>console.log("Clicked!")}>
+            <div className = "WeatherItem" onClick={() => {navigate(date.toDateString().substring(0,4) ) } }>
                 <div className='Contents'>
                     <div className="Day">{date.toDateString().substring(0,4)} </div>
                     <div className="Date">{date_reformat(prop.date)}  </div>
