@@ -12,3 +12,24 @@ export interface WeatherProps {
     min_temp : number,
     max_temp : number
 }
+
+export type LatLong = {
+    latitude : number,
+    longitude : number
+}
+
+type Interval = {
+    daily : string[]
+} | {
+    hourly : string[]
+}
+
+export interface QueryParams extends Interval, LatLong {
+    [index : string] : number | string[] | string,
+    start_date ?: string,
+    end_date ?: string,
+    timezone ?: string
+}
+export interface LocationToLatLong {
+    [index : string] : LatLong
+}

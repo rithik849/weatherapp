@@ -1,18 +1,27 @@
 import { useEffect, useState } from "react";
-import { url } from "../constants";
-import {IFetchedData} from '../project_types/types'
+import { locationToLatitudeLongitude, url } from "../constants";
+import {IFetchedData, QueryParams} from '../project_types/types'
 import { WeatherItem } from "./WeatherItem";
 import '../styles/Forecast.css'
+import { api_query } from "../utils";
 
 
-export const Forecast : React.FC = () => {
+const Forecast : React.FC = () => {
     const [fetchedData, setFetchedData] = useState<IFetchedData | null>(null);
 
+    // Fetch the request from the API
     useEffect( () => {
         const controller = new AbortController();
         const abortSignal = controller.signal;
+        const query : QueryParams = {
+            ...locationToLatitudeLongitude.London,
+            daily : ["temperature_2m_max","temperature_2m_min"],
+            timezone : "Europe/London"
+        }
+        const req : string = api_query(url,query)
+        console.log(req)
     
-        fetch(url,{method : 'GET',signal : abortSignal})
+        fetch(req,{method : 'GET',signal : abortSignal})
         .then((res) => res.json())
         .then(
             (json) => {
@@ -47,3 +56,4 @@ export const Forecast : React.FC = () => {
 
 }
 
+export default Forecast

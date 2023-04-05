@@ -1,6 +1,12 @@
-import {URL_Type} from "./project_types/types"
+import {LocationToLatLong, URL_Type} from "./project_types/types"
 
-const url : URL_Type = "https://api.open-meteo.com/v1/forecast?"+
-"latitude=52.52&longitude=13.41&daily=temperature_2m_max,temperature_2m_min&timezone=Europe%2FLondon";
+const url : URL_Type = "https://api.open-meteo.com/v1/forecast?"
+//+
+//"latitude=51.51&longitude=-0.13&daily=temperature_2m_max%2Ctemperature_2m_min&timezone=Europe%2FLondon";
 
-export {url}
+const locationToLatitudeLongitude : LocationToLatLong = {
+    London : {latitude : 51.51, longitude : -0.13},
+}
+
+export {url , locationToLatitudeLongitude}
+
