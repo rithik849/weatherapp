@@ -1,16 +1,23 @@
 export type URL_Type = string;
 
 export interface IFetchedData {
-    time : string[];
-    temperature_2m_min : number[];
-    temperature_2m_max : number[];
+    time : string[],
+    temperature_2m_min : number[],
+    temperature_2m_max : number[],
+    units : Record<string,string>
 }
 
 
 export interface WeatherProps { 
     date : string,
     min_temp : number,
-    max_temp : number
+    max_temp : number,
+    key : number,
+    units : Record<string,string>
+}
+
+export type WithKey<T>  = T & {
+    key : string | number 
 }
 
 export type LatLong = {
@@ -25,7 +32,7 @@ type Interval = {
 }
 
 export interface QueryParams extends Interval, LatLong {
-    [index : string] : number | string[] | string,
+    [index : string] : number | string[] | string | boolean,
     start_date ?: string,
     end_date ?: string,
     timezone ?: string
