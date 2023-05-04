@@ -51,7 +51,7 @@ export async function hourlyForecastLoader( {request, params} : {request : Reque
     const response : Response = await fetch(req, {method : 'GET',signal : abortSignal} )
     const json = (await response.json())
     const loaderData : ILoaderData = {
-        time : json.hourly.time.map((s : string)=> s) as string[],
+        time : json.hourly.time.map((s : string)=> date_format(s,"yyyy-MM-dd'T'T","T")) as string[],
         temperature : json.hourly.temperature_2m as number[],
         units : json.hourly_units as Record<string,string>
     }
