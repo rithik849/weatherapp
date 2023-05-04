@@ -3,36 +3,36 @@ import { locationToLatitudeLongitude, url } from "../constants"
 import { QueryParams } from "../project_types/types"
 import { api_query, date_format, is_valid_date } from "../utils"
 import { DateTime } from "luxon"
+import WeatherChart from "./WeatherChart"
 
-interface ILoaderData extends QueryParams{
-    found : boolean
+interface ILoaderData{
+    time : readonly string[],
+    temperature :readonly number[],
+    units : Record<string,string>
+
 }
 
 const DailyForecast : React.FC = () => {
     const navigate = useNavigate()
-    const loaderData = useLoaderData() as Awaited<ReturnType<typeof hourlyForecastLoader>>
+    const loaderData : ILoaderData = JSON.parse(useLoaderData() as string)
     console.log('Data')
+    console.log(typeof loaderData)
     console.log(loaderData)
-    console.log(loaderData.found)
-    console.log(!loaderData.found)
-    //{<button onClick={() => navigate(-1)}>Back</button>}
 
-    if (loaderData.found){
-        return <>
-            <p>{JSON.stringify(loaderData)}</p>
-            <button onClick = {() => {navigate(-1)}}>Back</button>
-            </>
-    }
+    return <>
+        <p>{JSON.stringify(loaderData)}</p>
+        <WeatherChart time={loaderData.time} temperature = {loaderData.temperature} />
+        <button onClick = {() => {navigate(-1)}}>Back</button>
+        </>
 
-    return <Navigate to='/' replace={true}/>
 }
 
-export async function hourlyForecastLoader( {request, params} : {request : Request , params : Params}) : Promise<Partial<ILoaderData>> {
+export async function hourlyForecastLoader( {request, params} : {request : Request , params : Params}) : Promise<Response> {
     
     const isValid : boolean = DateTime.fromFormat(params.day as string,'yyyy-MM-dd').isValid
 
     if (!isValid){
-        return {found : false} 
+        return redirect('/')
     }
 
     const controller : AbortController = new AbortController();
@@ -49,11 +49,17 @@ export async function hourlyForecastLoader( {request, params} : {request : Reque
 
     const req : string = api_query(url,query)
     const response : Response = await fetch(req, {method : 'GET',signal : abortSignal} )
-    const json : ILoaderData = {...(await response.json()), found : true }
+    const json = (await response.json())
+    const loaderData : ILoaderData = {
+        time : json.hourly.time.map((s : string)=> s) as string[],
+        temperature : json.hourly.temperature_2m as number[],
+        units : json.hourly_units as Record<string,string>
+    }
+    
     console.log('there')
     console.log(json)
 
-    return json 
+    return new Response(JSON.stringify(loaderData)) 
 }
 
 export default DailyForecast

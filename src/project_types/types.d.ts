@@ -8,7 +8,7 @@ export interface IFetchedData {
 }
 
 
-export interface WeatherProps { 
+export interface DailyWeatherProps { 
     date : string,
     min_temp : number,
     max_temp : number,

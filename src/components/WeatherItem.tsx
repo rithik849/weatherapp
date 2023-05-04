@@ -1,11 +1,11 @@
 import '../styles/WeatherItem.css'
-import {WeatherProps, WithKey} from "../project_types/types"
+import {DailyWeatherProps, WithKey} from "../project_types/types"
 import { date_format, date_reformat } from '../utils';
 import { useEffect, useState } from 'react';
 import {useNavigate } from 'react-router-dom';
 import { DateTime } from 'luxon';
 
-const WeatherItem :React.FC<React.PropsWithChildren<WeatherProps>> = (prop) : React.ReactElement => {
+const WeatherItem :React.FC<React.PropsWithChildren<DailyWeatherProps>> = (prop) : React.ReactElement => {
     const [date,setDate]  =  useState<DateTime>(DateTime.now())
     const navigate = useNavigate()
 
