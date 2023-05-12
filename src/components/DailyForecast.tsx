@@ -15,13 +15,14 @@ interface ILoaderData{
 const DailyForecast : React.FC = () => {
     const navigate = useNavigate()
     const loaderData : ILoaderData = JSON.parse(useLoaderData() as string)
-    console.log('Data')
-    console.log(typeof loaderData)
-    console.log(loaderData)
 
+    const units : Record<string,string> = {
+        'time': loaderData.units.time,
+        'temperature' : loaderData.units.temperature_2m
+    }
     return <>
         <p>{JSON.stringify(loaderData)}</p>
-        <WeatherChart time={loaderData.time} temperature = {loaderData.temperature} />
+        <WeatherChart time={loaderData.time} temperature = {loaderData.temperature} units = {units} />
         <button onClick = {() => {navigate(-1)}}>Back</button>
         </>
 
@@ -50,14 +51,12 @@ export async function hourlyForecastLoader( {request, params} : {request : Reque
     const req : string = api_query(url,query)
     const response : Response = await fetch(req, {method : 'GET',signal : abortSignal} )
     const json = (await response.json())
+    
     const loaderData : ILoaderData = {
         time : json.hourly.time.map((s : string)=> date_format(s,"yyyy-MM-dd'T'T","T")) as string[],
         temperature : json.hourly.temperature_2m as number[],
         units : json.hourly_units as Record<string,string>
     }
-    
-    console.log('there')
-    console.log(json)
 
     return new Response(JSON.stringify(loaderData)) 
 }
