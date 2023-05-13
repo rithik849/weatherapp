@@ -65,10 +65,14 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
 
         const yAxis = d3.scaleLinear().domain(minmaxTemperature).rangeRound([dimensions.height,0])
 
-        svg.append("g").attr("transform","translate("+margin.left+","+dimensions.height+")").call(
+        svg.append("g").attr("transform","translate("+margin.left+","+(margin.top+dimensions.height)+")").call(
             d3.axisBottom(xAxis).tickFormat(
                 (d) => d3.timeFormat('%H:%M')(d as Date)
             ).ticks(24)
+        )
+        
+        svg.append("g").attr("transform","translate("+margin.left+","+margin.top+")").call(
+            d3.axisLeft(yAxis)
         )
 
     }
