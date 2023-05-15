@@ -8,6 +8,8 @@ interface GraphProps<T extends readonly string[] = readonly string[]> {
     time : T,
     temperature : {[K in keyof T] : number},
     units : Record<string,string>
+    x_label : string
+    y_label : string
     
 
 }
@@ -15,8 +17,9 @@ interface GraphProps<T extends readonly string[] = readonly string[]> {
 type GraphPoint = [Date,number]
 
 interface GraphState {
-    points : GraphPoint[],
-    units : Record<string,string>
+    points : GraphPoint[]
+    x_label : string,
+    y_label : string
 }
 
 class WeatherChart extends React.Component<GraphProps,GraphState> {
@@ -24,7 +27,9 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
         super(props)
         this.state = {
             points : props.time.map((v,i) => [DateTime.fromFormat(v,"T").toJSDate() ,props.temperature[i]]),
-            units : props.units
+            x_label : props.x_label,
+            y_label : props.y_label
+
         }
 
     }
@@ -34,7 +39,7 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
             throw new Error('No data to plot!')
         }
         console.log(this.state)
-        const margin = {top: 10, right: 30, bottom: 30, left: 60}
+        const margin = {top: 10, right: 30, bottom: 50, left: 60}
         const dimensions = {width : 1080 - margin.left - margin.right , height : 300 - margin.top - margin.bottom}
         
         // const x = d3.scaleBand().range([0, dimensions.width]).padding(0.1);
@@ -65,16 +70,35 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
 
         const yAxis = d3.scaleLinear().domain(minmaxTemperature).rangeRound([dimensions.height,0])
 
-        svg.append("g").attr("transform","translate("+margin.left+","+(margin.top+dimensions.height)+")").call(
+        // Plot x axis
+        svg.append("g").attr("color","black").attr("transform","translate("+margin.left+","+(margin.top+dimensions.height)+")").call(
             d3.axisBottom(xAxis).tickFormat(
                 (d) => d3.timeFormat('%H:%M')(d as Date)
             ).ticks(24)
         )
+
+        svg.append("text")
         
-        svg.append("g").attr("transform","translate("+margin.left+","+margin.top+")").call(
+        .attr("class","x-label")
+        .attr("x",margin.left + dimensions.width/2)
+        .attr("y",margin.top+dimensions.height + (margin.bottom*3/4))
+        .style("text-anchor","middle")
+        .text(this.state.x_label)
+        
+
+        // Plot y axis
+        svg.append("g").attr("color","black").attr("transform","translate("+margin.left+","+margin.top+")").call(
             d3.axisLeft(yAxis)
         )
 
+        svg.append("text")
+        .attr("class", "y-label")
+        .attr("transform", "rotate(-90)")
+        .attr("x",-(margin.top + dimensions.height/2))
+        .attr("y", margin.left/3)
+        .style("text-anchor", "middle")
+        .text(this.state.y_label)
+        
     }
 
     componentWillUnmount(): void {

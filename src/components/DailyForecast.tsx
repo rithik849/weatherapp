@@ -22,7 +22,7 @@ const DailyForecast : React.FC = () => {
     }
     return <>
         <p>{JSON.stringify(loaderData)}</p>
-        <WeatherChart time={loaderData.time} temperature = {loaderData.temperature} units = {units} />
+        <WeatherChart time={loaderData.time} temperature = {loaderData.temperature} x_label = {"Time"} y_label = {"Temperature " +"("+ units.temperature +")"}   units = {units}/>
         <button onClick = {() => {navigate(-1)}}>Back</button>
         </>
 
@@ -51,7 +51,7 @@ export async function hourlyForecastLoader( {request, params} : {request : Reque
     const req : string = api_query(url,query)
     const response : Response = await fetch(req, {method : 'GET',signal : abortSignal} )
     const json = (await response.json())
-    
+
     const loaderData : ILoaderData = {
         time : json.hourly.time.map((s : string)=> date_format(s,"yyyy-MM-dd'T'T","T")) as string[],
         temperature : json.hourly.temperature_2m as number[],
