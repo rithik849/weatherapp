@@ -7,9 +7,10 @@ interface GraphProps<T extends readonly string[] = readonly string[]> {
 
     time : T,
     temperature : {[K in keyof T] : number},
-    units : Record<string,string>
-    x_label : string
-    y_label : string
+    x_label : string,
+    y_label : string,
+    x_units ?: string,
+    y_units ?: string
     
 
 }
@@ -19,7 +20,9 @@ type GraphPoint = [Date,number]
 interface GraphState {
     points : GraphPoint[]
     x_label : string,
-    y_label : string
+    y_label : string,
+    x_units ?: string,
+    y_units ?: string
 }
 
 class WeatherChart extends React.Component<GraphProps,GraphState> {
@@ -28,7 +31,9 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
         this.state = {
             points : props.time.map((v,i) => [DateTime.fromFormat(v,"T").toJSDate() ,props.temperature[i]]),
             x_label : props.x_label,
-            y_label : props.y_label
+            y_label : props.y_label,
+            x_units : props.x_units,
+            y_units : props.y_units
 
         }
 
@@ -39,30 +44,26 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
             throw new Error('No data to plot!')
         }
 
-        console.log(this.state)
         const margin = {top: 10, right: 30, bottom: 50, left: 60}
         const dimensions = {width : 1080 - margin.left - margin.right , height : 300 - margin.top - margin.bottom}
 
         const svg = d3.select(".graph")
+        .style("position","relative")
         .append("svg")
         .style("min-width", dimensions.width + margin.left + margin.right + "px")
         .style("min-height",dimensions.height + margin.top + margin.bottom + "px")
         .style("background-color","red")
+        .style("position","relative")
+        .attr("id","plot")
         .append("g")
-        
-
 
         const minmaxDate : [Date,Date]= d3.extent(this.state.points, (d : GraphPoint) => d[0]) as [Date,Date]
-        console.log('minMaxDate')
-        console.log(minmaxDate)
 
         // Ensure 0 is lowest temperature displayed if all temperatures are 0 or greater
         const minmaxTemperature : [number,number] = d3.extent(this.state.points, (d : GraphPoint) => d[1]) as [number,number]
         if (minmaxTemperature[0] > 0){
             minmaxTemperature[0] = 0
         }
-        console.log('minMaxTemperature')
-        console.log(minmaxTemperature)
 
         const xAxis : d3.ScaleTime<number,number,never> = d3.scaleTime().domain(minmaxDate).rangeRound([0,dimensions.width])
 
@@ -111,46 +112,51 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
         
         const Tooltip = d3.select(".graph")
         .append("div")
-            .style("visibility", "hidden")
-            .attr("class", "tooltip")
-            .style("background-color", "blue")
-            .style("border", "solid")
-            .style("border-width", "2px")
-            .style("border-radius", "5px")
-            .style("padding", "5px")
-            //.style("position","absolute")
+        .attr("class", "tooltip")
+        .style("visibility", "hidden")
+        .style("background-color", "blue")
+        .style("border", "solid")
+        .style("border-width", "2px")
+        .style("border-radius", "5px")
+        .style("padding", "5px")
+        .style("position","absolute")
+
+        const x_units : string | undefined = this.state.x_units
+        const y_units : string | undefined = this.state.y_units
             
 
         // Three function that change the tooltip when user hover / move / leave a cell
-        const mouseover = function(this : SVGCircleElement ,event : any, d : GraphPoint) {
-            Tooltip.style("visibility", "visible")
+        const mouseover = function(this : SVGElement ,event : any, d : GraphPoint) {
+            Tooltip.style("visibility", "visible").style("opacity",0.5)
         }
 
-        const mousemove = function(this : SVGCircleElement ,event : any, d : GraphPoint) {
+        const mousemove = function(this : SVGElement ,event : any, d : GraphPoint) {
+            
+            const display : string = d3.timeFormat("%H:%M")(d[0] as Date) + x_units +  "," + d[1] + y_units 
             Tooltip
-            .html("The exact value of<br>this cell is: " + d)
-            .style("left", (event.target[0]) + "px")
-            .style("top", (event.target[1]) + "px")
+            .html(display)
+            .style("left", (event.pageX) + "px")
+            .style("top", (event.pageY) + "px")
         }
 
-        const mouseleave = function(this : SVGCircleElement ,event : any, d : GraphPoint) {
+        const mouseleave = function(this : SVGElement ,event : any, d : GraphPoint) {
             Tooltip
             .style("visibility", "hidden")
         }
 
                 // Plot graph
 
-        // svg.append("path")
-        // .datum(this.state.points)
-        // .attr("id","line")
-        // .attr("fill", "none")
-        // .attr("transform","translate("+margin.left+","+margin.top+")")
-        // .attr("stroke", "black")
-        // .attr("stroke-width", 1.5)
-        // .attr("d", d3.line(
-        //     d => {return xAxis(d[0])}, d => {return yAxis(d[1])}
-        //     )
-        // )
+        svg.append("path")
+        .datum(this.state.points)
+        .attr("id","line")
+        .attr("fill", "none")
+        .attr("transform","translate("+margin.left+","+margin.top+")")
+        .attr("stroke", "black")
+        .attr("stroke-width", 1.5)
+        .attr("d", d3.line(
+            d => {return xAxis(d[0])}, d => {return yAxis(d[1])}
+            )
+        )
 
         svg.append('g')
         .selectAll("dot").data(this.state.points ).enter()

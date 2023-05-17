@@ -22,7 +22,7 @@ const DailyForecast : React.FC = () => {
     }
     return <>
         <p>{JSON.stringify(loaderData)}</p>
-        <WeatherChart time={loaderData.time} temperature = {loaderData.temperature} x_label = {"Time"} y_label = {"Temperature " +"("+ units.temperature +")"}   units = {units}/>
+        <WeatherChart time={loaderData.time} temperature = {loaderData.temperature} x_label = {"Time"} y_label = {"Temperature " +"("+ units.temperature +")"}   y_units = {units.temperature}/>
         <button onClick = {() => {navigate(-1)}}>Back</button>
         </>
 
