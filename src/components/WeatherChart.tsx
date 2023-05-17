@@ -121,8 +121,8 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
         .style("padding", "5px")
         .style("position","absolute")
 
-        const x_units : string | undefined = this.state.x_units
-        const y_units : string | undefined = this.state.y_units
+        const x_units : string | undefined = this.state.x_units !== undefined ? this.state.x_units : ""
+        const y_units : string | undefined = this.state.y_units !== undefined ? this.state.y_units : ""
             
 
         // Three function that change the tooltip when user hover / move / leave a cell
@@ -132,7 +132,7 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
 
         const mousemove = function(this : SVGElement ,event : any, d : GraphPoint) {
             
-            const display : string = d3.timeFormat("%H:%M")(d[0] as Date) + x_units +  "," + d[1] + y_units 
+            const display : string = d3.timeFormat("%H:%M%p")(d[0] as Date) + x_units +  "," + d[1] + y_units 
             Tooltip
             .html(display)
             .style("left", (event.pageX) + "px")
