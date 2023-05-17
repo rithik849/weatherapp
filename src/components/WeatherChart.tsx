@@ -49,7 +49,7 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
         .style("min-height",dimensions.height + margin.top + margin.bottom + "px")
         .style("background-color","red")
         .append("g")
-        .style("translate", "translate(" + margin.left + "," + margin.top + ")")
+        
 
 
         const minmaxDate : [Date,Date]= d3.extent(this.state.points, (d : GraphPoint) => d[0]) as [Date,Date]
@@ -68,7 +68,7 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
 
         const yAxis : d3.ScaleLinear<number,number> = d3.scaleLinear().domain(minmaxTemperature).rangeRound([dimensions.height,0])
 
-        // Plot x axis
+        // Plot x axis and label
         svg.append("g")
         .attr("color","black")
         .attr("transform","translate("+margin.left+","+(margin.top+dimensions.height)+")")
@@ -81,12 +81,12 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
         svg.append("text")
         .attr("class","x-label")
         .attr("x",margin.left + dimensions.width/2)
-        .attr("y",margin.top+dimensions.height + (margin.bottom*3/4))
+        .attr("y",(margin.top+dimensions.height + 40) + "px")
         .style("text-anchor","middle")
         .text(this.state.x_label)
         
 
-        // Plot y axis
+        // Plot y axis and label
         svg.append("g")
         .attr("color","black")
         .attr("transform","translate("+margin.left+","+margin.top+")")
@@ -98,26 +98,74 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
         .attr("class", "y-label")
         .attr("transform", "rotate(-90)")
         .attr("x",-(margin.top + dimensions.height/2))
-        .attr("y", margin.left/3)
+        .attr("y",(margin.left - 40) + "px")
         .style("text-anchor", "middle")
         .text(this.state.y_label)
 
 
-        // Plot path
 
-        svg.append("path")
-        .datum(this.state.points)
-        .attr("id","line")
-        .attr("fill", "none")
-        .attr("transform","translate("+margin.left+","+margin.top+")")
-        .attr("stroke", "black")
-        .attr("stroke-width", 1.5)
-        .attr("d", d3.line(
-            d => {return xAxis(d[0])}, d => {return yAxis(d[1])}
-            )
-        )
-    
+
+        // Tooltip
+        // create a tooltip
         
+        
+        const Tooltip = d3.select(".graph")
+        .append("div")
+            .style("visibility", "hidden")
+            .attr("class", "tooltip")
+            .style("background-color", "blue")
+            .style("border", "solid")
+            .style("border-width", "2px")
+            .style("border-radius", "5px")
+            .style("padding", "5px")
+            //.style("position","absolute")
+            
+
+        // Three function that change the tooltip when user hover / move / leave a cell
+        const mouseover = function(this : SVGCircleElement ,event : any, d : GraphPoint) {
+            Tooltip.style("visibility", "visible")
+        }
+
+        const mousemove = function(this : SVGCircleElement ,event : any, d : GraphPoint) {
+            Tooltip
+            .html("The exact value of<br>this cell is: " + d)
+            .style("left", (event.target[0]) + "px")
+            .style("top", (event.target[1]) + "px")
+        }
+
+        const mouseleave = function(this : SVGCircleElement ,event : any, d : GraphPoint) {
+            Tooltip
+            .style("visibility", "hidden")
+        }
+
+                // Plot graph
+
+        // svg.append("path")
+        // .datum(this.state.points)
+        // .attr("id","line")
+        // .attr("fill", "none")
+        // .attr("transform","translate("+margin.left+","+margin.top+")")
+        // .attr("stroke", "black")
+        // .attr("stroke-width", 1.5)
+        // .attr("d", d3.line(
+        //     d => {return xAxis(d[0])}, d => {return yAxis(d[1])}
+        //     )
+        // )
+
+        svg.append('g')
+        .selectAll("dot").data(this.state.points ).enter()
+        .append("circle")
+          .attr("cx", function (d : GraphPoint) { return xAxis(d[0]); } )
+          .attr("cy", function (d : GraphPoint) { return yAxis(d[1]); } )
+          .attr("r", 7)
+          .style("fill", "#69b3a2")
+          .style("opacity", 1)
+          .style("stroke", "white")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        .on("mouseover",mouseover)
+        .on("mousemove",mousemove)
+        .on("mouseleave",mouseleave)
+    
     }
 
     componentWillUnmount(): void {
