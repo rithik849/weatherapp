@@ -6,10 +6,10 @@
   align-items: center;
   position: absolute;
   height: 100%;
-  min-height: 1000px;
-  max-height: auto;
+  /* min-height: 1000px;
+  max-height: auto; */
   width:100%;
-  overflow: scroll;
+  /* overflow: scroll; */
   resize:none;
 
 
@@ -20,8 +20,6 @@
 @media (max-width: 1000px){
   .App{
       flex-direction: column;
-      justify-content: space-evenly;  
-      /* height : 90dvh;
-      width : 80%; */
+      justify-content: space-evenly;
   }
 }

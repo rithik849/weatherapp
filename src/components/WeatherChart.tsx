@@ -1,6 +1,7 @@
 import React from "react"
 import * as d3 from "d3"
 import { DateTime } from "luxon"
+import "../styles/WeatherChart.css"
 
 
 interface GraphProps<T extends readonly string[] = readonly string[]> {
@@ -44,18 +45,21 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
             throw new Error('No data to plot!')
         }
 
-        const margin = {top: 10, right: 30, bottom: 50, left: 60}
+        const margin = {top: 60, right: 80, bottom: 60, left: 60}
         const dimensions = {width : 1080 - margin.left - margin.right , height : 300 - margin.top - margin.bottom}
 
         const svg = d3.select(".graph")
-        .style("position","relative")
+            .style("position","relative")
         .append("svg")
-        .style("min-width", dimensions.width + margin.left + margin.right + "px")
-        .style("min-height",dimensions.height + margin.top + margin.bottom + "px")
-        .style("background-color","red")
-        .style("position","relative")
-        .attr("id","plot")
-        .append("g")
+            .attr("viewBox",`${0} ${0} ${dimensions.width + margin.left + margin.right} ${dimensions.height + margin.top + margin.bottom}`)
+            .attr("preserveAspectRatio","xMidYMid meet")
+            .attr("id","plot")
+            .style("background-color","red")
+            .style("min-width",`${dimensions.width+margin.left+margin.right}px`)
+            .append("g")
+            
+
+        
 
         const minmaxDate : [Date,Date]= d3.extent(this.state.points, (d : GraphPoint) => d[0]) as [Date,Date]
 
@@ -77,12 +81,12 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
             d3.axisBottom(xAxis).tickFormat(
                 (d) => d3.timeFormat('%H:%M')(d as Date)
                 ).ticks(24)
-            )
+            ).style("font-size","0.8rem")
 
         svg.append("text")
         .attr("class","x-label")
         .attr("x",margin.left + dimensions.width/2)
-        .attr("y",(margin.top+dimensions.height + 40) + "px")
+        .attr("y",(margin.top+dimensions.height + (margin.bottom/1.5)) + "px")
         .style("text-anchor","middle")
         .text(this.state.x_label)
         
@@ -93,13 +97,13 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
         .attr("transform","translate("+margin.left+","+margin.top+")")
         .call(
             d3.axisLeft(yAxis)
-            )
+            ).style("font-size","1rem")
 
         svg.append("text")
         .attr("class", "y-label")
         .attr("transform", "rotate(-90)")
         .attr("x",-(margin.top + dimensions.height/2))
-        .attr("y",(margin.left - 40) + "px")
+        .attr("y",(margin.left/3) + "px")
         .style("text-anchor", "middle")
         .text(this.state.y_label)
 
@@ -133,10 +137,12 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
         const mousemove = function(this : SVGElement ,event : any, d : GraphPoint) {
             
             const display : string = d3.timeFormat("%H:%M%p")(d[0] as Date) + x_units +  "," + d[1] + y_units 
+
             Tooltip
             .html(display)
-            .style("left", (event.pageX) + "px")
-            .style("top", (event.pageY) + "px")
+            .style("position","fixed")
+            .style("left", (event.pageX-60) + "px")
+            .style("top", (event.pageY-60) + "px")
         }
 
         const mouseleave = function(this : SVGElement ,event : any, d : GraphPoint) {
@@ -144,7 +150,7 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
             .style("visibility", "hidden")
         }
 
-                // Plot graph
+        // Plot graph
 
         svg.append("path")
         .datum(this.state.points)
@@ -193,6 +199,7 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
 
     render(): React.ReactNode {
         return <div className = 'graph'></div>
+            
     }
 
 }
