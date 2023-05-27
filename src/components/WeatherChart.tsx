@@ -46,16 +46,18 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
         }
 
         const margin = {top: 60, right: 80, bottom: 60, left: 60}
-        const dimensions = {width : 1080 - margin.left - margin.right , height : 300 - margin.top - margin.bottom}
+        const dimensions = {width : 1080 - margin.left - margin.right , height : 600 - margin.top - margin.bottom}
 
         const svg = d3.select(".graph")
-            .style("position","relative")
-        .append("svg")
-            .attr("viewBox",`${0} ${0} ${dimensions.width + margin.left + margin.right} ${dimensions.height + margin.top + margin.bottom}`)
-            .attr("preserveAspectRatio","xMidYMid meet")
+            //.style("min-height","300px")
+            .append("svg")
+            .style("min-width",`${dimensions.width+margin.left+margin.right}px`)
+            .style("min-height", `${dimensions.height+margin.top+margin.bottom}px`)
+            //.attr("viewBox",`${0} ${0} ${dimensions.width + margin.left + margin.right} ${dimensions.height + margin.top + margin.bottom}`)
+            //.attr("preserveAspectRatio","xMaxYMax meet")
+            //.classed("svg-content-responsive", true)
             .attr("id","plot")
             .style("background-color","red")
-            .style("min-width",`${dimensions.width+margin.left+margin.right}px`)
             .append("g")
             
 
