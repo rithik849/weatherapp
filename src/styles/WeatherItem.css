@@ -1,0 +1,33 @@
+
+
+.WeatherItem{
+    display: flex;
+    align-items: center;
+    border : 2px solid blue;
+    border-radius: 5px;
+    height : 95%;
+    margin : 5px;
+    width : 95%;
+}
+
+.WeatherItem:hover{
+    background-color: rgb(0, 255, 30);
+    border-color: aqua;
+    transition: 1.5s;
+}
+
+.Contents{
+    display: flex;
+    flex-flow : column;
+    justify-content: space-evenly;
+    margin: 0 auto;
+    width : 80%;
+    height: 90%;
+}
+
+@media (width :1000px) {
+    .WeatherItem{
+        width : 80%;
+
+    }
+}

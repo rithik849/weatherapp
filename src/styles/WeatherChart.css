@@ -1,0 +1,44 @@
+
+* {
+    outline: 1px solid blue;
+}
+
+#root{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    overflow-x : hidden;
+    height: 100%;
+}
+
+.graph{
+    position: relative;
+    display: flex;
+    height:auto;
+}
+svg{
+    width : 1080px;
+    height : 600px;
+}
+
+@media screen and (width < 1080px){
+    .graph{
+        width : 90dvw;
+        background-color: gray;
+        overflow-x: scroll;
+    }
+
+
+
+    body{
+        overflow-x: hidden;
+
+    }
+
+}
+
+
+
