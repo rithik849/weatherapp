@@ -26,7 +26,7 @@ svg{
 
 @media screen and (width < 1080px){
     .graph{
-        width : 90dvw;
+        width : 100dvw;
         background-color: gray;
         overflow-x: scroll;
     }
