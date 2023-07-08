@@ -1,21 +1,5 @@
 export type URL_Type = string;
 
-export interface IFetchedData {
-    time : string[],
-    temperature_2m_min : number[],
-    temperature_2m_max : number[],
-    units : Record<string,string>
-}
-
-
-export interface DailyWeatherProps { 
-    date : string,
-    min_temp : number,
-    max_temp : number,
-    key : number,
-    units : Record<string,string>
-}
-
 export type WithKey<T>  = T & {
     key : string | number 
 }
@@ -40,3 +24,5 @@ export interface QueryParams extends Interval, LatLong {
 export interface LocationToLatLong {
     [index : string] : LatLong
 }
+
+export type Location = Extract<keyof LocationToLatLong, string>

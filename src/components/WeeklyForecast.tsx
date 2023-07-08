@@ -1,20 +1,30 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { locationToLatitudeLongitude, url } from "../constants";
-import {IFetchedData, QueryParams} from '../project_types/types'
+import {QueryParams} from '../types'
 import { WeatherItem } from "./WeatherItem";
 import '../styles/Forecast.css'
 import { api_query } from "../utils";
+import Sidebar from "./Sidebar";
+import { LocationContext } from "../context";
+
+export interface IWeeklyForecastData {
+    time : string[],
+    temperature_2m_min : number[],
+    temperature_2m_max : number[],
+    units : Record<string,string>
+}
 
 
 const WeeklyForecast : React.FC = () => {
-    const [fetchedData, setFetchedData] = useState<IFetchedData | null>(null);
+    const [fetchedData, setFetchedData] = useState<IWeeklyForecastData | null>(null);
+    const [country,setCountry] = useContext(LocationContext)
 
     // Fetch the request from the API
     useEffect( () => {
         const controller = new AbortController();
         const abortSignal = controller.signal;
         const query : QueryParams = {
-            ...locationToLatitudeLongitude.London,
+            ...locationToLatitudeLongitude[country],
             daily : ["temperature_2m_max","temperature_2m_min"],
             timezone : "Europe/London"
         }
@@ -39,13 +49,15 @@ const WeeklyForecast : React.FC = () => {
     
         return () => {controller.abort()}
     
-    },[])
+    },[country])
     
     
     
     
     return (
     <div className="App">
+    <Sidebar />
+    <div className="DayForecast">
         {
             fetchedData?.time.map(
                 (item,index) =>
@@ -53,6 +65,7 @@ const WeeklyForecast : React.FC = () => {
             )
             
         }
+    </div>
     </div>
     )
 

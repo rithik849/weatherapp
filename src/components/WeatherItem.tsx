@@ -1,9 +1,16 @@
 import '../styles/WeatherItem.css'
-import {DailyWeatherProps, WithKey} from "../project_types/types"
 import { date_format} from '../utils';
 import { useEffect, useState } from 'react';
 import {useNavigate } from 'react-router-dom';
 import { DateTime } from 'luxon';
+
+export interface DailyWeatherProps { 
+    date : string,
+    min_temp : number,
+    max_temp : number,
+    key : number,
+    units : Record<string,string>
+}
 
 const WeatherItem :React.FC<React.PropsWithChildren<DailyWeatherProps>> = (prop) : React.ReactElement => {
     const [date,setDate]  =  useState<DateTime>(DateTime.now())

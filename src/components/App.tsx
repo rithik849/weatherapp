@@ -2,7 +2,7 @@ import WeeklyForecast from './WeeklyForecast'
 import ErrorPage from "./ErrorPage"
 import {createBrowserRouter, createRoutesFromElements, Route, RouterProvider} from 'react-router-dom'
 import DailyForecast, {hourlyForecastLoader} from './DailyForecast';
-
+import CountryProvider from '../context';
 
 const App : React.FC = () => {
 
@@ -17,7 +17,9 @@ const App : React.FC = () => {
 
 
     return (
-        <RouterProvider router = {router}/>
+        <CountryProvider>
+            <RouterProvider router = {router}/>
+        </CountryProvider>
     )
 };
 

@@ -1,4 +1,4 @@
-import { QueryParams, LatLong, URL_Type } from "./project_types/types"
+import { QueryParams, LatLong, URL_Type } from "./types"
 //import { URLSearchParams } from "url"
 import {DateTime} from "luxon"
 
