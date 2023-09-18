@@ -1,0 +1,156 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test sidebar interactions render the app 1`] = `
+<DocumentFragment>
+  <div
+    class="sidebar"
+  >
+    <button
+      class="toggle"
+      role="button"
+    >
+      <svg
+        class="graphic"
+        fill="none"
+        height="1em"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+        width="1em"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <line
+          x1="3"
+          x2="21"
+          y1="12"
+          y2="12"
+        />
+        <line
+          x1="3"
+          x2="21"
+          y1="6"
+          y2="6"
+        />
+        <line
+          x1="3"
+          x2="21"
+          y1="18"
+          y2="18"
+        />
+      </svg>
+      <p
+        class="toggleText"
+      >
+        Menu
+      </p>
+    </button>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Test sidebar interactions that the sidebar closes 1`] = `
+<DocumentFragment>
+  <div
+    class="sidebar"
+  >
+    <button
+      class="toggle"
+      role="button"
+    >
+      <svg
+        class="graphic"
+        fill="none"
+        height="1em"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+        width="1em"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <line
+          x1="3"
+          x2="21"
+          y1="12"
+          y2="12"
+        />
+        <line
+          x1="3"
+          x2="21"
+          y1="6"
+          y2="6"
+        />
+        <line
+          x1="3"
+          x2="21"
+          y1="18"
+          y2="18"
+        />
+      </svg>
+      <p
+        class="toggleText"
+      >
+        Menu
+      </p>
+    </button>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Test sidebar interactions that the sidebar opens 1`] = `
+<DocumentFragment>
+  <div
+    class="sidebar active"
+  >
+    <nav
+      class="navigation"
+    >
+      <div
+        class="sidebar-item "
+      >
+        Europe/London
+      </div>
+      <div
+        class="sidebar-item "
+      >
+        Germany
+      </div>
+    </nav>
+    <button
+      class="toggle"
+      role="button"
+    >
+      <svg
+        class="graphic"
+        fill="none"
+        height="1em"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+        width="1em"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <line
+          x1="19"
+          x2="5"
+          y1="12"
+          y2="12"
+        />
+        <polyline
+          points="12 19 5 12 12 5"
+        />
+      </svg>
+      <p
+        class="toggleText"
+      >
+        Close Menu
+      </p>
+    </button>
+  </div>
+</DocumentFragment>
+`;
