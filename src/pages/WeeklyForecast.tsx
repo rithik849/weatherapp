@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from "react";
 import { locationToLatitudeLongitude, url } from "../constants";
 import {QueryParams} from '../types'
-import { WeatherItem } from "./WeatherItem";
+import { WeatherItem } from "../components/WeatherItem";
 import '../styles/Forecast.css'
 import { api_query } from "../utils";
-import Sidebar from "./Sidebar";
+import Sidebar from "../components/Sidebar";
 import { LocationContext } from "../context";
 
 export interface IWeeklyForecastData {

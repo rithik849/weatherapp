@@ -1,5 +1,5 @@
 import React from "react"
-import * as d3 from "d3"
+import {ScaleTime, ScaleLinear, axisBottom,extent,select, scaleTime, scaleLinear, timeFormat, axisLeft, line, selectAll,formatDefaultLocale} from 'd3'
 import { DateTime } from "luxon"
 import "../styles/WeatherChart.css"
 
@@ -48,7 +48,7 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
         const margin = {top: 60, right: 80, bottom: 60, left: 60}
         const dimensions = {width : 1080 - margin.left - margin.right , height : 600 - margin.top - margin.bottom}
 
-        const svg = d3.select(".graph")
+        const svg = select(".graph")
             //.style("min-height","300px")
             .append("svg")
             .style("min-width",`${dimensions.width+margin.left+margin.right}px`)
@@ -63,25 +63,34 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
 
         
 
-        const minmaxDate : [Date,Date]= d3.extent(this.state.points, (d : GraphPoint) => d[0]) as [Date,Date]
+        const minmaxDate : [Date,Date]= extent(this.state.points, (d : GraphPoint) => d[0]) as [Date,Date]
 
         // Ensure 0 is lowest temperature displayed if all temperatures are 0 or greater
-        const minmaxTemperature : [number,number] = d3.extent(this.state.points, (d : GraphPoint) => d[1]) as [number,number]
-        if (minmaxTemperature[0] > 0){
+        const minmaxTemperature : [number,number] = extent(this.state.points, (d : GraphPoint) => d[1]) as [number,number]
+
+        if (minmaxTemperature[0] >= 0){
             minmaxTemperature[0] = 0
         }
 
-        const xAxis : d3.ScaleTime<number,number,never> = d3.scaleTime().domain(minmaxDate).rangeRound([0,dimensions.width])
+        const xAxis : ScaleTime<number,number,never> = scaleTime().domain(minmaxDate).rangeRound([0,dimensions.width])
 
-        const yAxis : d3.ScaleLinear<number,number> = d3.scaleLinear().domain(minmaxTemperature).rangeRound([dimensions.height,0])
+        const yAxis : ScaleLinear<number,number> = scaleLinear().domain(minmaxTemperature).rangeRound([dimensions.height,0])
+        // Add max and min tick
+        let y_tick = yAxis.ticks()
+        if (!(minmaxTemperature[0] in y_tick)){
+            y_tick.push(minmaxTemperature[0])
+        }
 
+        if (!(minmaxTemperature[1] in y_tick)){
+            y_tick.push(minmaxTemperature[1])
+        }
         // Plot x axis and label
         svg.append("g")
         .attr("color","black")
         .attr("transform","translate("+margin.left+","+(margin.top+dimensions.height)+")")
         .call(
-            d3.axisBottom(xAxis).tickFormat(
-                (d) => d3.timeFormat('%H:%M')(d as Date)
+            axisBottom(xAxis).tickFormat(
+                (d) => timeFormat('%H:%M')(d as Date)
                 ).ticks(24)
             ).style("font-size","0.8rem")
 
@@ -90,7 +99,7 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
         .attr("x",margin.left + dimensions.width/2)
         .attr("y",(margin.top+dimensions.height + (margin.bottom/1.5)) + "px")
         .style("text-anchor","middle")
-        .text(this.state.x_label)
+        .text(this.state.x_label + (this.state.x_units ? (" (" + this.state.x_units+")") : ""))
         
 
         // Plot y axis and label
@@ -98,7 +107,8 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
         .attr("color","black")
         .attr("transform","translate("+margin.left+","+margin.top+")")
         .call(
-            d3.axisLeft(yAxis)
+            axisLeft(yAxis)
+            .tickValues(y_tick)
             ).style("font-size","1rem")
 
         svg.append("text")
@@ -107,7 +117,7 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
         .attr("x",-(margin.top + dimensions.height/2))
         .attr("y",(margin.left/3) + "px")
         .style("text-anchor", "middle")
-        .text(this.state.y_label)
+        .text(this.state.y_label + (this.state.y_units ? (" (" + this.state.y_units+")"): ""))
 
 
 
@@ -116,9 +126,10 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
         // create a tooltip
         
         
-        const Tooltip = d3.select(".graph")
+        const Tooltip = select(".graph")
         .append("div")
         .attr("class", "tooltip")
+        .attr("data-testid","tooltip")
         .style("visibility", "hidden")
         .style("background-color", "blue")
         .style("border", "solid")
@@ -126,6 +137,7 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
         .style("border-radius", "5px")
         .style("padding", "5px")
         .style("position","absolute")
+        .attr("name","tooltip")
 
         const x_units : string | undefined = this.state.x_units !== undefined ? this.state.x_units : ""
         const y_units : string | undefined = this.state.y_units !== undefined ? this.state.y_units : ""
@@ -133,12 +145,12 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
 
         // Three function that change the tooltip when user hover / move / leave a cell
         const mouseover = function(this : SVGElement ,event : any, d : GraphPoint) {
-            Tooltip.style("visibility", "visible").style("opacity",0.5)
+            Tooltip.style("visibility", "visible").style("opacity",0.5).attr("role","button")
         }
 
         const mousemove = function(this : SVGElement ,event : any, d : GraphPoint) {
             
-            const display : string = d3.timeFormat("%H:%M%p")(d[0] as Date) + x_units +  "," + d[1] + y_units 
+            const display : string = timeFormat("%H:%M")(d[0] as Date) + x_units +  "," + d[1] + y_units 
 
             Tooltip
             .html(display)
@@ -161,8 +173,8 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
         .attr("transform","translate("+margin.left+","+margin.top+")")
         .attr("stroke", "black")
         .attr("stroke-width", 1.5)
-        .attr("d", d3.line(
-            d => {return xAxis(d[0])}, d => {return yAxis(d[1])}
+        .attr("d", line(
+            (d: GraphPoint) => {return xAxis(d[0])}, (d : GraphPoint) => {return yAxis(d[1])}
             )
         )
 
@@ -176,14 +188,16 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
           .style("opacity", 1)
           .style("stroke", "white")
           .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+          .attr("role","application")
+          .attr("aria-label","point")
         .on("mouseover",mouseover)
         .on("mousemove",mousemove)
-        .on("mouseleave",mouseleave)
+        .on("mouseout",mouseleave)
     
     }
 
     componentWillUnmount(): void {
-        d3.selectAll('svg').remove()
+        selectAll('svg').remove()
     }
 
 

@@ -3,6 +3,7 @@ import ErrorPage from "./ErrorPage"
 import {createBrowserRouter, createRoutesFromElements, Route, RouterProvider} from 'react-router-dom'
 import DailyForecast, {hourlyForecastLoader} from './DailyForecast';
 import CountryProvider from '../context';
+import WeatherChart from '../components/WeatherChart';
 
 const App : React.FC = () => {
 

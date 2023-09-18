@@ -3,7 +3,7 @@ import { locationToLatitudeLongitude, url } from "../constants"
 import { QueryParams } from "../types"
 import { api_query, date_format, is_valid_date } from "../utils"
 import { DateTime } from "luxon"
-import WeatherChart from "./WeatherChart"
+import WeatherChart from "../components/WeatherChart"
 import { useContext, useEffect, useState } from "react"
 import { LocationContext } from "../context"
 
@@ -65,8 +65,9 @@ const DailyForecast : React.FC = () => {
             'time': data.units.time,
             'temperature' : data.units.temperature_2m
         }
+        console.log(data.time)
         return <>
-            <WeatherChart time={data.time} temperature = {data.temperature} x_label = {"Time"} y_label = {"Temperature " +"("+ units.temperature +")"}   y_units = {units.temperature}/>
+            <WeatherChart time={data.time} temperature = {data.temperature} x_label = {"Time"} y_label = {"Temperature"}   y_units = {units.temperature}/>
             <button onClick = {() => {navigate(-1)}}>Back</button>
             </>
     }

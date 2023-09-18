@@ -1,8 +1,9 @@
 
-* {
+/* for debugging
+*{
     outline: 1px solid blue;
 }
-
+ */
 #root{
     position: relative;
     display: flex;
