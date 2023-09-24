@@ -78,7 +78,6 @@ describe("Test Weather Chart Plot", () => {
     
     test("Correct Scale of y Axis less than 0", async() => {
       let {debug,getByText,findByText} = render(<WeatherChart time = {dummy_time_data} temperature = {dummy_temperature_data.map(d => d-24)} x_label ="Time" y_label ="Temperature" y_units="C"/>)
-      // debug()
       // Need to account for d3 minus locale https://github.com/d3/d3-format/issues/62
       let min_y = getByText(/(-|−)22/) 
 
