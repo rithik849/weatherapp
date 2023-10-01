@@ -87,6 +87,17 @@ describe("Test Weather Chart Plot", () => {
       expect(max_y).not.toBeNull()
     })
 
+    test("Correct Scale of y Axis at odd intervals", async() => {
+      let {debug,getByText,findByText} = render(<WeatherChart time = {dummy_time_data} temperature = {dummy_temperature_data.map(d => d-15)} x_label ="Time" y_label ="Temperature" y_units="C"/>)
+      // Need to account for d3 minus locale https://github.com/d3/d3-format/issues/62
+      let min_y = getByText(/(-|−)14/) 
+
+      expect(min_y).not.toBeNull()
+
+      let max_y = getByText(/34/)
+      expect(max_y).not.toBeNull()
+    })
+
     afterEach(()=>{
       cleanup()
     })

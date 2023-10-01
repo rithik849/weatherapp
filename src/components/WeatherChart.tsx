@@ -67,7 +67,11 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
 
         if (minmaxTemperature[0] >= 0){
             minmaxTemperature[0] = 0
+        }else{
+            minmaxTemperature[0] = Math.ceil(minmaxTemperature[0])%2==0 ? Math.ceil(minmaxTemperature[0]) : Math.ceil(minmaxTemperature[0])-1
         }
+
+        minmaxTemperature[1] = Math.ceil(minmaxTemperature[1])%2==0 ? Math.ceil(minmaxTemperature[1]) : Math.ceil(minmaxTemperature[1])+1
 
         const xAxis : ScaleTime<number,number,never> = scaleTime().domain(minmaxDate).rangeRound([0,dimensions.width])
 
@@ -81,6 +85,7 @@ class WeatherChart extends React.Component<GraphProps,GraphState> {
         if (!(minmaxTemperature[1] in y_tick)){
             y_tick.push(minmaxTemperature[1])
         }
+        console.log(y_tick)
         // Plot x axis and label
         svg.append("g")
         .attr("color","black")

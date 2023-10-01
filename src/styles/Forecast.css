@@ -14,7 +14,7 @@
   margin-left: calc(var(--sidebarWidth));
   width: calc(100dvw - var(--sidebarWidth));
   /* overflow: scroll; */
-  outline: dotted red;
+  /* outline: dotted red; */
 }
 
 .active{
@@ -28,7 +28,7 @@
   width: var(--sidebarWidth);
   height: 100dvh;
   /* position: absolute; */
-  outline: solid green;
+  /* outline: solid green; */
 }
 
 .App{
